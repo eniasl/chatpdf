@@ -13,6 +13,8 @@ export const chats = pgTable(
         fileKey: text("file_key").notNull(),
 });
 
+export type DrizzleChat = typeof chats.$inferSelect;
+
 export const messages = pgTable(
     "messages",
     <Record<string,PgColumnBuilder>><unknown>{

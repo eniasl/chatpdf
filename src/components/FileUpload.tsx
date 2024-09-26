@@ -6,10 +6,12 @@ import {uploadToS3} from "@/lib/s3";
 import {useMutation} from "@tanstack/react-query";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { useRouter } from 'next/navigation'
 
 
 
 const FileUpload = () => {
+    const router = useRouter();
     const [uploading, setUploading] = React.useState(false);
     const {mutate,isLoading} = useMutation({
         mutationFn: async ({file_key, file_name}:{file_key:string,file_name:string}) => {
@@ -28,30 +30,28 @@ const FileUpload = () => {
                 toast.error("File too large");
                 return;
             }
-
+            setUploading(true);
             try {
-                setUploading(true);
                 const data = await uploadToS3(file);
                 console.log("data after uploading to s3",data);
                 if (!data?.file_key || !data.file_name) {
                     alert("File missing");
                     return;
                 }
-                mutate(data,{
-                    onSucess: (data) => {
+                mutate(data, {
+                    onSuccess: ({ chat_id }) => {
                         toast.success("File uploaded successfully");
+                        router.push(`/dashboard/chat`);
                     },
                     onError: (error) => {
-                        console.log("Error in mutation",error);
+                        console.log("Error in mutation", error);
                         toast.error("Error uploading file");
                     }
                 });
             }catch (error){
-                console.log("Error in file upload",error);
-            }finally {
                 setUploading(false);
+                console.log("Error in file upload",error);
             }
-
         }
     });
 
