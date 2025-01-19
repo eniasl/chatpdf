@@ -1,29 +1,19 @@
+import {auth} from "@clerk/nextjs/server";
+import {redirect} from "next/navigation";
+import {db} from "@/lib/db";
+import {chats} from "@/lib/db/schema";
+import {eq} from "drizzle-orm";
+import ChatPageClient from "@/components/ChatPageClient";
 
-import React, {FC} from 'react';
-import Sidebar from "@/components/Sidebar";
-import CardPage from '@/app/dashboard/card/[chatid]/page';
-import Chats from "@/app/dashboard/chat/page";
+const ChatPage = async () => {
+    const { userId } = await auth();
+    if (!userId) return redirect("/sign-in");
 
+    const userChats = await db.select()
+        .from(chats)
+        .where(eq(chats.userId, userId));
 
-
-
-const Dashboard:FC<{children:React.ReactNode}> = ({children}) => {
-
-
-
-    return (
-        <div className="flex h-screen">
-            {/* Sidebar - Fixed */}
-            <div className="w-64 h-full fixed">
-                <Sidebar/>
-            </div>
-
-            {/* Content area with margin to account for the fixed sidebar */}
-            <div className="flex-1 ml-64 overflow-auto">
-                {children}
-            </div>
-        </div>
-    );
+    return <ChatPageClient initialChats={userChats} />;
 };
 
-export default Dashboard;
+export default ChatPage;

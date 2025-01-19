@@ -12,21 +12,12 @@ const Sidebar = () => {
             <h1>ChatPdf</h1>
             <div className="flex flex-col gap-3 mt-4">
                 <button
-                    onClick={() => router.push(`/dashboard/chat`)}
+                    onClick={() => router.push(`/chat`)}
                     className={`w-full h-10 rounded-lg ${
-                        pathname === '/dashboard/chat' ? 'bg-indigo-600' : 'border-solid border-white border'
+                        pathname === '/dashboard' ? 'bg-indigo-600' : 'border-solid border-white border'
                     }`}
                 >
                     Chats
-                </button>
-
-                <button
-                    onClick={() => router.push(`/dashboard/card`)}
-                    className={`w-full h-10 rounded-lg ${
-                        pathname === '/dashboard/card' ? 'bg-indigo-600' : 'border-solid border-white border'
-                    }`}
-                >
-                    Cards
                 </button>
             </div>
         </div>
